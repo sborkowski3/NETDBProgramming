@@ -12,6 +12,9 @@ namespace MovieLINQ
         {
             logger.Info("Program started");
 
+            string scrubbedFile = FileScrubber.ScrubMovies("../../movies.csv");
+            MovieFile movieFile = new MovieFile(scrubbedFile);
+
             logger.Info("Program ended");
         }
     }
