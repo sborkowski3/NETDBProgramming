@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NLog;
 
 namespace MovieLINQ
@@ -14,6 +15,11 @@ namespace MovieLINQ
 
             string scrubbedFile = FileScrubber.ScrubMovies("../../movies.csv");
             MovieFile movieFile = new MovieFile(scrubbedFile);
+
+            // LINQ - Where filter operator & Contains quantifier operator
+            var Movies = movieFile.Movies.Where(m => m.title.Contains("(1990)"));
+            // LINQ - Count aggregation method
+            Console.WriteLine($"There are {Movies.Count()} movies from 1990");
 
             logger.Info("Program ended");
         }
