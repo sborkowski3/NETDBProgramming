@@ -43,6 +43,13 @@ namespace MovieLINQ
                 Console.WriteLine(t);
             }
 
+            // LINQ - OrderBy ordering operator
+            var MoviesOrdered = movieFile.Movies.Where(m => m.title.Contains("Shark")).OrderBy(m => m.title);
+            foreach (Movie m in MoviesOrdered)
+            {
+                Console.WriteLine(m.Display());
+            }
+
             logger.Info("Program ended");
         }
     }
