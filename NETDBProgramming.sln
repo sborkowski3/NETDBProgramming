@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieLibrary", "MovieLibrar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaLibrary", "MediaLibrary\MediaLibrary.csproj", "{1E8341D5-38C8-4656-A750-A01B8F004FFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieLINQ", "MovieLINQ\MovieLINQ.csproj", "{6A5C9BF1-3D91-41D4-AFEC-4C31D20BC174}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -61,5 +63,9 @@ Global
 		{1E8341D5-38C8-4656-A750-A01B8F004FFF}.Debug|x86.Build.0 = Debug|x86
 		{1E8341D5-38C8-4656-A750-A01B8F004FFF}.Release|x86.ActiveCfg = Release|x86
 		{1E8341D5-38C8-4656-A750-A01B8F004FFF}.Release|x86.Build.0 = Release|x86
+		{6A5C9BF1-3D91-41D4-AFEC-4C31D20BC174}.Debug|x86.ActiveCfg = Debug|x86
+		{6A5C9BF1-3D91-41D4-AFEC-4C31D20BC174}.Debug|x86.Build.0 = Debug|x86
+		{6A5C9BF1-3D91-41D4-AFEC-4C31D20BC174}.Release|x86.ActiveCfg = Release|x86
+		{6A5C9BF1-3D91-41D4-AFEC-4C31D20BC174}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal
