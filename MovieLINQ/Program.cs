@@ -29,6 +29,13 @@ namespace MovieLINQ
             int num = movieFile.Movies.Where(m => m.title.Contains("(1921)")).Count();
             Console.WriteLine($"There are {num} movies from 1921?");
 
+            // LINQ - Where filter operator & Contains quantifier operator
+            var Movies1921 = movieFile.Movies.Where(m => m.title.Contains("(1921)"));
+            foreach(Movie m in Movies1921)
+            {
+                Console.WriteLine(m.Display());
+            }
+
             logger.Info("Program ended");
         }
     }
