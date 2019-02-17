@@ -36,6 +36,13 @@ namespace MovieLINQ
                 Console.WriteLine(m.Display());
             }
 
+            // LINQ - Select projection operator
+            var titles = movieFile.Movies.Where(m => m.title.Contains("Shark")).Select(m => m.title);
+            foreach(string t in titles)
+            {
+                Console.WriteLine(t);
+            }
+
             logger.Info("Program ended");
         }
     }
