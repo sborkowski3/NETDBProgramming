@@ -50,6 +50,10 @@ namespace MovieLINQ
                 Console.WriteLine(m.Display());
             }
 
+            // LINQ - First element operator
+            var FirstMovie = movieFile.Movies.First(m => m.title.StartsWith("Z", StringComparison.OrdinalIgnoreCase));
+            Console.WriteLine($"First movie: {FirstMovie.title}");
+
             logger.Info("Program ended");
         }
     }
