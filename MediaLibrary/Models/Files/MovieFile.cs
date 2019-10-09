@@ -1,29 +1,21 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MediaLibrary.Models.Media;
 
-namespace MediaLibrary
+namespace MediaLibrary.Models.Files
 {
-    public class MovieFile
+    public class MovieFile : BaseFile<Movie>
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        // public property
-        public string filePath { get; set; }
-        public List<Movie> Movies { get; set; }
-
-        // constructor is a special method that is invoked
-        // when an instance of a class is created
         public MovieFile(string path)
         {
-            Movies = new List<Movie>();
-            filePath = path;
+            MediaList = new List<Movie>();
+            FilePath = path;
             // to populate the list with data, read from the data file
             try
             {
-                StreamReader sr = new StreamReader(filePath);
+                StreamReader sr = new StreamReader(FilePath);
                 while (!sr.EndOfStream)
                 {
                     // create instance of Movie class
@@ -37,77 +29,76 @@ namespace MediaLibrary
                         // no quote = no comma in movie title
                         // movie details are separated with comma(,)
                         string[] movieDetails = line.Split(',');
-                        movie.mediaId = UInt64.Parse(movieDetails[0]);
-                        movie.title = movieDetails[1];
-                        movie.genres = movieDetails[2].Split('|').ToList();
-                        movie.director = movieDetails[3];
-                        movie.runningTime = TimeSpan.Parse(movieDetails[4]);
+                        movie.MediaId = UInt64.Parse(movieDetails[0]);
+                        movie.Title = movieDetails[1];
+                        movie.Genres = movieDetails[2].Split('|').ToList();
+                        movie.Director = movieDetails[3];
+                        movie.RunningTime = TimeSpan.Parse(movieDetails[4]);
                     }
                     else
                     {
                         // quote = comma or quotes in movie title
                         // extract the movieId
-                        movie.mediaId = UInt64.Parse(line.Substring(0, idx - 1));
+                        movie.MediaId = UInt64.Parse(line.Substring(0, idx - 1));
                         // remove movieId and first comma from string
                         line = line.Substring(idx);
                         // find the last quote
                         idx = line.LastIndexOf('"');
                         // extract title
-                        movie.title = line.Substring(0, idx + 1);
+                        movie.Title = line.Substring(0, idx + 1);
                         // remove title and next comma from the string
                         line = line.Substring(idx + 2);
                         // split the remaining string based on commas
                         string[] details = line.Split(',');
                         // the first item in the array should be genres 
-                        movie.genres = details[0].Split('|').ToList();
+                        movie.Genres = details[0].Split('|').ToList();
                         // if there is another item in the array it should be director
-                        movie.director = details[1];
+                        movie.Director = details[1];
                         // if there is another item in the array it should be run time
-                        movie.runningTime = TimeSpan.Parse(details[2]);
+                        movie.RunningTime = TimeSpan.Parse(details[2]);
                     }
-                    Movies.Add(movie);
+                    MediaList.Add(movie);
                 }
                 // close file when done
                 sr.Close();
-                logger.Info("Movies in file {Count}", Movies.Count);
+                Logger.Info("Movies in file {Count}", MediaList.Count);
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                Logger.Error(ex.Message);
             }
         }
 
-        // public method
-        public bool isUniqueTitle(string title)
+        public override bool IsUniqueTitle(string title)
         {
-            if (Movies.ConvertAll(m => m.title.ToLower()).Contains(title.ToLower()))
+            if (MediaList.ConvertAll(m => m.Title.ToLower()).Contains(title.ToLower()))
             {
-                logger.Info("Duplicate movie title {Title}", title);
+                Logger.Info("Duplicate movie title {Title}", title);
                 return false;
             }
             return true;
         }
 
-        public void AddMovie(Movie movie)
+        public override void Add(Movie movie)
         {
             try
             {
                 // first generate movie id
-                movie.mediaId = Movies.Max(m => m.mediaId) + 1;
+                movie.MediaId = MediaList.Max(m => m.MediaId) + 1;
                 // if title contains a comma, wrap it in quotes
-                string title = movie.title.IndexOf(',') != -1 || movie.title.IndexOf('"') != -1 ? $"\"{movie.title}\"" : movie.title;
-                StreamWriter sw = new StreamWriter(filePath, true);
+                string title = movie.Title.IndexOf(',') != -1 || movie.Title.IndexOf('"') != -1 ? $"\"{movie.Title}\"" : movie.Title;
+                StreamWriter sw = new StreamWriter(FilePath, true);
                 // write movie data to file
-                sw.WriteLine($"{movie.mediaId},{title},{string.Join("|", movie.genres)},{movie.director},{movie.runningTime}");
+                sw.WriteLine($"{movie.MediaId},{title},{string.Join("|", movie.Genres)},{movie.Director},{movie.RunningTime}");
                 sw.Close();
                 // add movie details to List
-                Movies.Add(movie);
+                MediaList.Add(movie);
                 // log transaction
-                logger.Info("Media id {Id} added", movie.mediaId);
+                Logger.Info("Media id {Id} added", movie.MediaId);
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                Logger.Error(ex.Message);
             }
         }
     }

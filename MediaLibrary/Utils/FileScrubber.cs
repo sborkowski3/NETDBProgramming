@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using MediaLibrary.Models.Media;
 
-namespace MediaLibrary
+namespace MediaLibrary.Utils
 {
     public static class FileScrubber
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public static string ScrubMovies(string readFile)
         {
             try
@@ -18,12 +19,12 @@ namespace MediaLibrary
                 if (File.Exists(writeFile))
                 {
                     // file has already been scrubbed
-                    logger.Info("File already scrubbed");
+                    _logger.Info("File already scrubbed");
                 }
                 else
                 {
                     // file has not been scrubbed
-                    logger.Info("File scrub started");
+                    _logger.Info("File scrub started");
                     // open write file
                     StreamWriter sw = new StreamWriter(writeFile);
                     // open read file
@@ -44,23 +45,23 @@ namespace MediaLibrary
                             // no quote = no comma or quote in movie title
                             // movie details are separated with comma(,)
                             string[] movieDetails = line.Split(',');
-                            movie.mediaId = UInt64.Parse(movieDetails[0]);
-                            movie.title = movieDetails[1];
+                            movie.MediaId = UInt64.Parse(movieDetails[0]);
+                            movie.Title = movieDetails[1];
                             genres = movieDetails[2];
-                            movie.director = movieDetails.Length > 3 ? movieDetails[3] : "unassigned";
-                            movie.runningTime = movieDetails.Length > 4 ? TimeSpan.Parse(movieDetails[4]) : new TimeSpan(0);
+                            movie.Director = movieDetails.Length > 3 ? movieDetails[3] : "unassigned";
+                            movie.RunningTime = movieDetails.Length > 4 ? TimeSpan.Parse(movieDetails[4]) : new TimeSpan(0);
                         }
                         else
                         {
                             // quote = comma or quotes in movie title
                             // extract the movieId
-                            movie.mediaId = UInt64.Parse(line.Substring(0, idx - 1));
+                            movie.MediaId = UInt64.Parse(line.Substring(0, idx - 1));
                             // remove movieId and first comma from string
                             line = line.Substring(idx);
                             // find the last quote
                             idx = line.LastIndexOf('"');
                             // extract title
-                            movie.title = line.Substring(0, idx + 1);
+                            movie.Title = line.Substring(0, idx + 1);
                             // remove title and next comma from the string
                             line = line.Substring(idx + 2);
                             // split the remaining string based on commas
@@ -68,21 +69,21 @@ namespace MediaLibrary
                             // the first item in the array should be genres 
                             genres = details[0];
                             // if there is another item in the array it should be director
-                            movie.director = details.Length > 1 ? details[1] : "unassigned";
+                            movie.Director = details.Length > 1 ? details[1] : "unassigned";
                             // if there is another item in the array it should be run time
-                            movie.runningTime = details.Length > 2 ? TimeSpan.Parse(details[2]) : new TimeSpan(0);
+                            movie.RunningTime = details.Length > 2 ? TimeSpan.Parse(details[2]) : new TimeSpan(0);
                         }
-                        sw.WriteLine($"{movie.mediaId},{movie.title},{genres},{movie.director},{movie.runningTime}");
+                        sw.WriteLine($"{movie.MediaId},{movie.Title},{genres},{movie.Director},{movie.RunningTime}");
                     }
                     sw.Close();
                     sr.Close();
-                    logger.Info("File scrub ended");
+                    _logger.Info("File scrub ended");
                 }
                 return writeFile;
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
             return "";
         }
