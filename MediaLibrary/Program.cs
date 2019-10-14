@@ -1,31 +1,30 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MediaLibrary.Models.Files;
 using MediaLibrary.Models.Media;
 using MediaLibrary.Utils;
 using NLog;
-using System.Linq;
 
 namespace MediaLibrary
 {
-    class MainClass
+    internal class MainClass
     {
         // create a class level instance of logger (can be used in methods other than Main)
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static void Main(string[] args)
         {
             Logger.Info("Program started");
 
-            string scrubbedFile = FileScrubber.ScrubMovies("../../Data/movies.csv");
-            string albumFileName = "../../Data/albums.csv";
-            string bookFileName = "../../Data/books.csv";
+            var scrubbedFile = FileScrubber.ScrubMovies("../../Data/movies.csv");
+            var albumFileName = "../../Data/albums.csv";
+            var bookFileName = "../../Data/books.csv";
             BaseFile<Movie> movieFile = new MovieFile(scrubbedFile);
             BaseFile<Album> albumFile = new AlbumFile(albumFileName);
             BaseFile<Book> bookFile = new BookFile(bookFileName);
 
-            string choice = "";
+            var choice = "";
             do
             {
                 // display choices to user
@@ -43,7 +42,7 @@ namespace MediaLibrary
                 if (choice == "1")
                 {
                     // Add movie
-                    Movie movie = new Movie();
+                    var movie = new Movie();
                     // ask user to input movie title
                     Console.WriteLine("Enter movie title");
                     // input title
@@ -61,16 +60,11 @@ namespace MediaLibrary
                             input = Console.ReadLine();
                             // if user enters "done"
                             // or does not enter a genre do not add it to list
-                            if (input != "done" && input.Length > 0)
-                            {
-                                movie.Genres.Add(input);
-                            }
+                            if (input != "done" && input.Length > 0) movie.Genres.Add(input);
                         } while (input != "done");
+
                         // specify if no genres are entered
-                        if (movie.Genres.Count == 0)
-                        {
-                            movie.Genres.Add("(no genres listed)");
-                        }
+                        if (movie.Genres.Count == 0) movie.Genres.Add("(no genres listed)");
                         // ask user to enter director
                         Console.WriteLine("Enter movie director");
                         input = Console.ReadLine();
@@ -86,20 +80,16 @@ namespace MediaLibrary
                     {
                         Console.WriteLine("Movie title already exists\n");
                     }
-
                 }
                 else if (choice == "2")
                 {
                     // Display All Movies
-                    foreach (Movie m in movieFile.MediaList)
-                    {
-                        Console.WriteLine(m.Display());
-                    }
+                    foreach (var m in movieFile.MediaList) Console.WriteLine(m.Display());
                 }
                 else if (choice == "3")
                 {
                     // Add Album
-                    Album album = new Album();
+                    var album = new Album();
                     // ask user to input album title
                     Console.WriteLine("Enter album title");
                     // input title
@@ -117,16 +107,11 @@ namespace MediaLibrary
                             input = Console.ReadLine();
                             // if user enters "done"
                             // or does not enter a genre do not add it to list
-                            if (input != "done" && input.Length > 0)
-                            {
-                                album.Genres.Add(input);
-                            }
+                            if (input != "done" && input.Length > 0) album.Genres.Add(input);
                         } while (input != "done");
+
                         // specify if no genres are entered
-                        if (album.Genres.Count == 0)
-                        {
-                            album.Genres.Add("(no genres listed)");
-                        }
+                        if (album.Genres.Count == 0) album.Genres.Add("(no genres listed)");
                         // ask user to enter director
                         Console.WriteLine("Enter album artist");
                         input = Console.ReadLine();
@@ -146,15 +131,12 @@ namespace MediaLibrary
                 else if (choice == "4")
                 {
                     // Display All Albums
-                    foreach (Album a in albumFile.MediaList)
-                    {
-                        Console.WriteLine(a.Display());
-                    }
+                    foreach (var a in albumFile.MediaList) Console.WriteLine(a.Display());
                 }
                 else if (choice == "5")
                 {
                     // Add Book
-                    Book book = new Book();
+                    var book = new Book();
                     // ask user to input book title
                     Console.WriteLine("Enter book title");
                     // input title
@@ -172,16 +154,11 @@ namespace MediaLibrary
                             input = Console.ReadLine();
                             // if user enters "done"
                             // or does not enter a genre do not add it to list
-                            if (input != "done" && input.Length > 0)
-                            {
-                                book.Genres.Add(input);
-                            }
+                            if (input != "done" && input.Length > 0) book.Genres.Add(input);
                         } while (input != "done");
+
                         // specify if no genres are entered
-                        if (book.Genres.Count == 0)
-                        {
-                            book.Genres.Add("(no genres listed)");
-                        }
+                        if (book.Genres.Count == 0) book.Genres.Add("(no genres listed)");
                         // ask user to enter author
                         Console.WriteLine("Enter book author");
                         input = Console.ReadLine();
@@ -193,7 +170,7 @@ namespace MediaLibrary
                         // ask user to enter number of pages
                         Console.WriteLine("Enter number of pages");
                         input = Console.ReadLine();
-                        book.PageCount = input.Length == 0 ? (UInt16)0 : UInt16.Parse(input);
+                        book.PageCount = input.Length == 0 ? (ushort) 0 : ushort.Parse(input);
                         // add book
                         bookFile.Add(book);
                     }
@@ -205,59 +182,37 @@ namespace MediaLibrary
                 else if (choice == "6")
                 {
                     // Display All Books
-                    foreach (Book b in bookFile.MediaList)
-                    {
-                        Console.WriteLine(b.Display());
-                    }
+                    foreach (var b in bookFile.MediaList) Console.WriteLine(b.Display());
                 }
                 else if (choice == "7")
                 {
-                    char selection;
-
                     // ask user for search details
                     Console.WriteLine("What would you like to search?");
-                    Console.WriteLine($"(A)lbum, (B)ook, (M)ovie?");
-                    while (!IsValidInput(Console.ReadKey(true).KeyChar, out selection))
-                    {
-                        Console.WriteLine($"Invalid input: {selection}");
-                        Console.WriteLine();
-                        Console.WriteLine("Please enter (A)lbum, (B)ook, or (M)ovie");
-                        Console.WriteLine("?");
-                    }
-
                     Console.WriteLine("Enter your search term");
                     var searchString = Console.ReadLine();
 
                     // create base class variable to hold results
-                    IEnumerable<BaseMedia> results;
+                    var results = new List<BaseMedia>();
 
-                    // call specific method on the appropriate concrete type
-                    if (selection == 'A')
-                        results = albumFile.Search(searchString);
-                    else if (selection == 'B')
-                        results = bookFile.Search(searchString);
-                    else
-                        results = movieFile.Search(searchString);
+                    results.AddRange(albumFile.Search(searchString));
+                    results.AddRange(bookFile.Search(searchString));
+                    results.AddRange(movieFile.Search(searchString));
 
                     // output results
-                    foreach (var item in results)
-                    {
-                        Console.WriteLine(item.Display());
-                    }
+                    foreach (var item in results) Console.WriteLine(item.Display());
                 }
-            } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5" || choice == "6" || choice == "7");
+            } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5" ||
+                     choice == "6" || choice == "7");
 
             Logger.Info("Program ended");
         }
+
         private static bool IsValidInput(char input, out char selection)
         {
-            char[] validValues = { 'A', 'a', 'B', 'b', 'M', 'm' };
+            char[] validValues = {'A', 'a', 'B', 'b', 'M', 'm'};
 
-            selection = Char.ToUpper(input);
-            if (validValues.Contains(input))
-            {
-                return true;
-            }
+            selection = char.ToUpper(input);
+            if (validValues.Contains(input)) return true;
 
             return false;
         }

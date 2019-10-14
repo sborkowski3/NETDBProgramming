@@ -57,7 +57,10 @@
     <Compile Include="Models\Files\BookFile.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\albums.csv" />
+    <None Include="Data\books.csv" />
     <None Include="Data\movies.csv" />
+    <None Include="Data\movies.scrubbed.csv" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
