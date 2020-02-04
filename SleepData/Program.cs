@@ -15,8 +15,8 @@ namespace SleepData
             string resp = Console.ReadLine();
 
             // specify path for data file
-            string file = "/users/jgrissom/downloads/data.txt";
-
+            //string file = "/users/jgrissom/downloads/data.txt";
+            string file = AppDomain.CurrentDomain.BaseDirectory + "data.txt";
             if (resp == "1")
             {
                 // create data file
@@ -59,7 +59,16 @@ namespace SleepData
             else if (resp == "2")
             {
                 // TODO: parse data file
+                string line = "";
+                using (StreamReader sr = new StreamReader("data.txt"))
+                {
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        Console.WriteLine(line);
+                    }
 
+
+                }
             }
         }
     }
